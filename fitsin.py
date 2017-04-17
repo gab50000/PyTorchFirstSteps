@@ -17,19 +17,29 @@ def main():
     model = torch.nn.Sequential(
         torch.nn.Linear(in_size, hidden_size),
         torch.nn.Tanh(),
-        torch.nn.Linear(hidden_size, out_size)
+        torch.nn.Linear(hidden_size, 10),
     )
 
-    loss_func = torch.nn.MSELoss(size_average=False)
+    loss_func = torch.nn.CrossEntropyLoss()
 
     trainset = datasets.MNIST(root="data", train=True, download=True,
                               transform=transforms.ToTensor())
     trainloader = torch.utils.data.DataLoader(trainset)
 
+    optimizer = torch.optim.Adam(model.parameters())
+
+    for ep in range(1000):
+        train(ep)
+
+def train(epoch):
     model.train()
     for data, target in trainloader:
         data, target = Variable(data), Variable(target)
-        print(model(data.view(-1, 784)))
+        optimizer.zero_grad()
+        y_net = model(data.view(-1, 784))
+        loss = loss_func(y_net, target)
+        loss.backward()
+        optimizer.step()
 
 
 
