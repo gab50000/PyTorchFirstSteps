@@ -28,18 +28,18 @@ def main():
 
     optimizer = torch.optim.Adam(model.parameters())
 
-    for ep in range(1000):
-        train(ep)
-
-def train(epoch):
     model.train()
-    for data, target in trainloader:
-        data, target = Variable(data), Variable(target)
-        optimizer.zero_grad()
-        y_net = model(data.view(-1, 784))
-        loss = loss_func(y_net, target)
-        loss.backward()
-        optimizer.step()
+
+    for ep in range(1000):
+        for data, target in trainloader:
+            data, target = Variable(data), Variable(target)
+            optimizer.zero_grad()
+            y_net = model(data.view(-1, 784))
+            loss = loss_func(y_net, target)
+            loss.backward()
+            optimizer.step()
+            import ipdb; ipdb.set_trace()
+        print(ep)
 
 
 
